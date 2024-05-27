@@ -11,7 +11,7 @@ Network Program Detector - это программное обеспечение,
 ## Требования
 
 - Python 3.7 или выше
-- Библиотека:
+- Библиотеки:
   - `platform`
   - `socket`
   - `subprocess`
