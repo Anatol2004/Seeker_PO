@@ -2,9 +2,7 @@ import platform
 import socket
 import subprocess
 import winreg as reg
-
 import scapy.all as sc
-
 
 # Получаем локальный IP-адрес
 def local_ipv4():
@@ -18,18 +16,15 @@ def local_ipv4():
         st.close()
     return ip_l
 
-
 # Получаем адрес шлюза по умолчанию для Windows
 def get_gateway_win():
     com = f'route PRINT 0* | findstr {local_ipv4()}'.split()
     return subprocess.check_output(com, shell=True).decode('cp866').split()[2]
 
-
 # Получаем адрес шлюза по умолчанию для Linux
 def get_gateway_linx():
     com = 'route -n'.split()
     return str(subprocess.check_output(com, shell=True)).split("\\n")[2].split()[1].strip()
-
 
 # Сканируем сеть, получаем IP и MAC сетевых машин
 def get_ip_mac_network(ip):
@@ -39,14 +34,12 @@ def get_ip_mac_network(ip):
         clients_list.append({'ip': element[1].psrc, 'mac': element[1].hwsrc})
     return clients_list
 
-
 # Проверяем наличие программы на устройстве (локально или удалённо)
 def check_program(ip_address, program_name):
     if ip_address == local_ipv4():
         return check_program_locally(program_name)
     else:
         return check_program_remotely(ip_address, program_name)
-
 
 # Проверяем наличие программы локально на устройстве
 def check_program_locally(program_name):
@@ -69,7 +62,6 @@ def check_program_locally(program_name):
     
     return False
 
-
 # Проверяем наличие программы на удалённом устройстве
 def check_program_remotely(ip_address, program_name):
     command = f'where /q \\{ip_address} "{program_name}"'
@@ -84,7 +76,6 @@ def check_program_remotely(ip_address, program_name):
     except subprocess.TimeoutExpired:
         return False
 
-
 # Выводим IP, MAC и информацию о программе для каждого компьютера в сети
 def print_ip_mac_with_program(mac_ip_list, program_name):
     print(f"\nMachines in Network:\n\nIP\t\t\t\t\tMAC-address\t\tProgram Installed\n{'-' * 70}")
@@ -95,7 +86,6 @@ def print_ip_mac_with_program(mac_ip_list, program_name):
     # Проверяем наличие программы на локальном устройстве
     program_installed_local = check_program(local_ipv4(), program_name)
     print(f'\nLocal Machine ({local_ipv4()}):\nProgram "{program_name}" installed: {"Yes" if program_installed_local else "No"}')
-
 
 # Основная функция
 def main():
@@ -108,7 +98,6 @@ def main():
     ip_mac_network = get_ip_mac_network(f'{local_ip.split(".")[0]}.{local_ip.split(".")[1]}.{local_ip.split(".")[2]}.1/24')
     print(f'\n[+] Local IP: {local_ip}\n[+] Local Gateway: {gateway}')
     print_ip_mac_with_program(ip_mac_network, program_name)
-
 
 if __name__ == "__main__":
     main()
